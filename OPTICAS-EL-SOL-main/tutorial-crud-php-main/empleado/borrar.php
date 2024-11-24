@@ -1,4 +1,5 @@
 <?php
+
 include '../funciones.php';
 
 $config = include '../config.php';
@@ -9,17 +10,20 @@ $resultado = [
 ];
 
 try {
+    // Configuración de la conexión
     $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
     if (isset($_GET['codigo_empleado'])) {
         $codigo_empleado = $_GET['codigo_empleado'];
 
-        $consultaSQL = "DELETE FROM Empleado WHERE codigo_empleado = :codigo_empleado";
+        // Llamar al procedimiento almacenado para eliminar el empleado
+        $consultaSQL = "CALL borrarEmpleado(:codigo_empleado)";
         $sentencia = $conexion->prepare($consultaSQL);
         $sentencia->bindParam(':codigo_empleado', $codigo_empleado, PDO::PARAM_STR);
         $sentencia->execute();
 
+        // Redirigir al índice después de eliminar
         header('Location: index.php');
         exit;
     } else {

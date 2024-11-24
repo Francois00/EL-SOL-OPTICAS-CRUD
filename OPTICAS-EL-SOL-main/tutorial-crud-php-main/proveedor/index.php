@@ -14,12 +14,12 @@ try {
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
     if (isset($_POST['codigo_proveedor'])) {
-        $consultaSQL = "SELECT * FROM Proveedor WHERE codigo_proveedor LIKE :codigo_proveedor";
+        $consultaSQL = "CALL leerProveedorPorCodigo(:codigo_proveedor)";
         $sentencia = $conexion->prepare($consultaSQL);
         $codigo_proveedor = "%" . $_POST['codigo_proveedor'] . "%";
         $sentencia->bindParam(':codigo_proveedor', $codigo_proveedor, PDO::PARAM_STR);
     } else {
-        $consultaSQL = "SELECT * FROM Proveedor";
+        $consultaSQL = "CALL leerProveedor()";
         $sentencia = $conexion->prepare($consultaSQL);
     }
 

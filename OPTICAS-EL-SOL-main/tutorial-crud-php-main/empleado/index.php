@@ -1,4 +1,5 @@
 <?php
+
 include '../funciones.php';
 
 csrf();
@@ -10,16 +11,20 @@ $error = false;
 $config = include '../config.php';
 
 try {
+    // Configuración de la conexión
     $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
+    // Buscar empleados por código si se proporciona
     if (isset($_POST['codigo_empleado'])) {
-        $consultaSQL = "SELECT * FROM Empleado WHERE codigo_empleado LIKE :codigo_empleado";
-        $sentencia = $conexion->prepare($consultaSQL);
         $codigo_empleado = "%" . $_POST['codigo_empleado'] . "%";
+        // Usar el procedimiento almacenado para buscar empleados
+        $consultaSQL = "CALL leerEmpleado()";
+        $sentencia = $conexion->prepare($consultaSQL);
         $sentencia->bindParam(':codigo_empleado', $codigo_empleado, PDO::PARAM_STR);
     } else {
-        $consultaSQL = "SELECT * FROM Empleado";
+        // Usar el procedimiento almacenado para obtener todos los empleados
+        $consultaSQL = "CALL leerEmpleado()";
         $sentencia = $conexion->prepare($consultaSQL);
     }
 
@@ -31,6 +36,7 @@ try {
 }
 
 $titulo = isset($_POST['codigo_empleado']) ? 'Lista de empleados (' . $_POST['codigo_empleado'] . ')' : 'Lista de empleados';
+
 ?>
 
 <?php include '../templates/header.php'; ?>

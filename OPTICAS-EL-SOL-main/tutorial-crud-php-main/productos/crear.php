@@ -7,6 +7,11 @@ if (isset($_POST['submit']) && !hash_equals($_SESSION['csrf'], $_POST['csrf'])) 
     die();
 }
 
+$resultado = [
+    'error' => false,
+    'mensaje' => ''
+];
+
 if (isset($_POST['submit'])) {
     $resultado = [
         'error' => false,
@@ -16,9 +21,11 @@ if (isset($_POST['submit'])) {
     $config = include '../config.php';
 
     try {
+        // Configuración de la conexión
         $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
         $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
+        // Preparar los datos del producto
         $producto = [
             "codigo_producto" => $_POST['codigo_producto'],
             "nombre" => $_POST['nombre'],
@@ -29,17 +36,28 @@ if (isset($_POST['submit'])) {
             "codigo_catalogo" => $_POST['codigo_catalogo']
         ];
 
-        $consultaSQL = "INSERT INTO Producto (codigo_producto, nombre, marca, descripcion, precio, tipo_de_producto, codigo_catalogo) 
-                        VALUES (:codigo_producto, :nombre, :marca, :descripcion, :precio, :tipo_de_producto, :codigo_catalogo)";
-
+        // Llamar al procedimiento almacenado para insertar el producto
+        $consultaSQL = "CALL insertarProducto(:codigo_producto, :nombre, :marca, :descripcion, :precio, :tipo_de_producto, :codigo_catalogo)";
         $sentencia = $conexion->prepare($consultaSQL);
-        $sentencia->execute($producto);
+
+        // Vincular los parámetros al procedimiento
+        $sentencia->bindParam(':codigo_producto', $producto['codigo_producto'], PDO::PARAM_STR);
+        $sentencia->bindParam(':nombre', $producto['nombre'], PDO::PARAM_STR);
+        $sentencia->bindParam(':marca', $producto['marca'], PDO::PARAM_STR);
+        $sentencia->bindParam(':descripcion', $producto['descripcion'], PDO::PARAM_STR);
+        $sentencia->bindParam(':precio', $producto['precio'], PDO::PARAM_STR);
+        $sentencia->bindParam(':tipo_de_producto', $producto['tipo_de_producto'], PDO::PARAM_STR);
+        $sentencia->bindParam(':codigo_catalogo', $producto['codigo_catalogo'], PDO::PARAM_STR);
+
+        // Ejecutar el procedimiento
+        $sentencia->execute();
 
     } catch (PDOException $error) {
         $resultado['error'] = true;
         $resultado['mensaje'] = $error->getMessage();
     }
 }
+
 ?>
 
 <?php include '../templates/header.php'; ?>

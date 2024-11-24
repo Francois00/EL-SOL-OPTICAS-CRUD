@@ -20,20 +20,24 @@ if (!isset($_GET['codigo_proveedor'])) {
 
 if (isset($_POST['submit'])) {
   try {
+    // Configuración de la conexión
     $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
+    // Datos del proveedor
     $proveedor = [
       "codigo_proveedor" => $_GET['codigo_proveedor'],
       "nombre_proveedor" => $_POST['nombre_proveedor']
     ];
 
-    $consultaSQL = "UPDATE Proveedor SET
-        nombre_proveedor = :nombre_proveedor
-        WHERE codigo_proveedor = :codigo_proveedor";
-
+    // Llamada al procedimiento almacenado para modificar el proveedor
+    $consultaSQL = "CALL modificarProveedor(:codigo_proveedor, :nombre_proveedor)";
     $consulta = $conexion->prepare($consultaSQL);
-    $consulta->execute($proveedor);
+    $consulta->bindParam(':codigo_proveedor', $proveedor['codigo_proveedor'], PDO::PARAM_STR);
+    $consulta->bindParam(':nombre_proveedor', $proveedor['nombre_proveedor'], PDO::PARAM_STR);
+    $consulta->execute();
+
+    $resultado['mensaje'] = 'El proveedor ' . escapar($_POST['nombre_proveedor']) . ' ha sido actualizado correctamente';
 
   } catch (PDOException $error) {
     $resultado['error'] = true;
@@ -42,11 +46,13 @@ if (isset($_POST['submit'])) {
 }
 
 try {
+  // Conexión a la base de datos
   $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
   $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
+  // Obtener los datos del proveedor
   $codigo_proveedor = $_GET['codigo_proveedor'];
-  $consultaSQL = "SELECT * FROM Proveedor WHERE codigo_proveedor = :codigo_proveedor";
+  $consultaSQL = "CALL leerProveedorPorCodigo(:codigo_proveedor)";
 
   $sentencia = $conexion->prepare($consultaSQL);
   $sentencia->bindParam(':codigo_proveedor', $codigo_proveedor, PDO::PARAM_STR);

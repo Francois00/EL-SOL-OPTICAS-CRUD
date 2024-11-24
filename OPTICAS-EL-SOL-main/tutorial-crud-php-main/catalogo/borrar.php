@@ -1,4 +1,5 @@
 <?php
+
 include '../funciones.php';
 
 $config = include '../config.php';
@@ -9,15 +10,20 @@ $resultado = [
 ];
 
 try {
+    // Configuración de la conexión
     $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
     if (isset($_GET['codigo_catalogo'])) {
         $codigo_catalogo = $_GET['codigo_catalogo'];
-        $consultaSQL = "DELETE FROM Catalogo WHERE codigo_catalogo = :codigo_catalogo";
+
+        // Llamar al procedimiento almacenado para borrar el catálogo
+        $consultaSQL = "CALL borrarCatalogo(:codigo_catalogo)";
         $sentencia = $conexion->prepare($consultaSQL);
         $sentencia->bindParam(':codigo_catalogo', $codigo_catalogo, PDO::PARAM_STR);
         $sentencia->execute();
+
+        // Redirigir al índice después de borrar
         header('Location: index.php');
         exit;
     } else {
@@ -48,4 +54,3 @@ try {
 </div>
 
 <?php require "../templates/footer.php"; ?>
-

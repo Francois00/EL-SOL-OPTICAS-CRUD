@@ -14,10 +14,13 @@ try {
 
     if (isset($_GET['codigo_producto'])) {
         $codigo_producto = $_GET['codigo_producto'];
-        $consultaSQL = "DELETE FROM Producto WHERE codigo_producto = :codigo_producto";
+
+        // Llamar al procedimiento almacenado para borrar el producto
+        $consultaSQL = "CALL borrarProducto(:codigo_producto)";
         $sentencia = $conexion->prepare($consultaSQL);
         $sentencia->bindParam(':codigo_producto', $codigo_producto, PDO::PARAM_STR);
         $sentencia->execute();
+
         header('Location: index.php');
         exit;
     } else {

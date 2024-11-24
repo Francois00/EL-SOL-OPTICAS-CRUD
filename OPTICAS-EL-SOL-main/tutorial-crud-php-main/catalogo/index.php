@@ -1,4 +1,5 @@
 <?php
+
 include '../funciones.php';
 
 csrf();
@@ -10,16 +11,17 @@ $error = false;
 $config = include '../config.php';
 
 try {
+    // Configuración de la conexión
     $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
     if (isset($_POST['codigo_catalogo'])) {
-        $consultaSQL = "SELECT * FROM Catalogo WHERE codigo_catalogo LIKE :codigo_catalogo";
+        $consultaSQL = "CALL leerCatalogo()";
         $sentencia = $conexion->prepare($consultaSQL);
         $codigo_catalogo = "%" . $_POST['codigo_catalogo'] . "%";
         $sentencia->bindParam(':codigo_catalogo', $codigo_catalogo, PDO::PARAM_STR);
     } else {
-        $consultaSQL = "SELECT * FROM Catalogo";
+        $consultaSQL = "CALL leerCatalogo()";
         $sentencia = $conexion->prepare($consultaSQL);
     }
 
@@ -31,6 +33,7 @@ try {
 }
 
 $titulo = isset($_POST['codigo_catalogo']) ? 'Lista de catálogos (' . $_POST['codigo_catalogo'] . ')' : 'Lista de catálogos';
+
 ?>
 
 <?php include '../templates/header.php'; ?>
@@ -90,6 +93,7 @@ $titulo = isset($_POST['codigo_catalogo']) ? 'Lista de catálogos (' . $_POST['c
                                 <td><?php echo escapar($fila["stock"]); ?></td>
                                 <td><?php echo escapar($fila["codigo_empleado"]); ?></td>
                                 <td>
+                                    <!-- Usar procedimientos para borrar y editar -->
                                     <a href="<?= 'borrar.php?codigo_catalogo=' . escapar($fila["codigo_catalogo"]) ?>">🗑️Borrar</a>
                                     <a href="<?= 'editar.php?codigo_catalogo=' . escapar($fila["codigo_catalogo"]) ?>">✏️Editar</a>
                                 </td>
@@ -100,7 +104,7 @@ $titulo = isset($_POST['codigo_catalogo']) ? 'Lista de catálogos (' . $_POST['c
                             <td colspan="7">No se encontraron resultados</td>
                         </tr>
                     <?php } ?>
-                <tbody>
+                </tbody>
             </table>
         </div>
     </div>

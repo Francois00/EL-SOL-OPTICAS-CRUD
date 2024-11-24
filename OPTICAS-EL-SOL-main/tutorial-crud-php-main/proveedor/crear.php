@@ -19,15 +19,13 @@ if (isset($_POST['submit'])) {
     $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
-    $proveedor = [
-      "codigo_proveedor" => $_POST['codigo_proveedor'],
-      "nombre_proveedor" => $_POST['nombre_proveedor']
-    ];
-
-    $consultaSQL = "INSERT INTO Proveedor (codigo_proveedor, nombre_proveedor) VALUES (:codigo_proveedor, :nombre_proveedor)";
-
+    $consultaSQL = "CALL insertarProveedor(:codigo_proveedor, :nombre_proveedor)";
     $sentencia = $conexion->prepare($consultaSQL);
-    $sentencia->execute($proveedor);
+
+    $sentencia->bindParam(':codigo_proveedor', $_POST['codigo_proveedor'], PDO::PARAM_STR);
+    $sentencia->bindParam(':nombre_proveedor', $_POST['nombre_proveedor'], PDO::PARAM_STR);
+
+    $sentencia->execute();
 
   } catch (PDOException $error) {
     $resultado['error'] = true;

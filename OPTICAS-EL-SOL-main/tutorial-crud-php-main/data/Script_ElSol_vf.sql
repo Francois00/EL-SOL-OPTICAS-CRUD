@@ -365,3 +365,419 @@ INSERT INTO Incluir_Producto VALUES
 ('43138', '29123', 1),
 ('43128', '29124', 1),
 ('43119', '29125', 1);
+
+
+CREATE PROCEDURE insertarEmpleado(
+    IN p_codigo_empleado CHAR(10),
+    IN p_nombre_empleado VARCHAR(45),
+    IN p_turno CHAR(5),
+    IN p_estado CHAR(8)
+)
+BEGIN
+    INSERT INTO Empleado (codigo_empleado, nombre_empleado, turno, estado)
+    VALUES (p_codigo_empleado, p_nombre_empleado, p_turno, p_estado);
+END;
+
+CREATE PROCEDURE modificarEmpleado(
+    IN p_codigo_empleado CHAR(10),
+    IN p_nombre_empleado VARCHAR(45),
+    IN p_turno CHAR(5),
+    IN p_estado CHAR(8)
+)
+BEGIN
+    UPDATE Empleado
+    SET nombre_empleado = p_nombre_empleado, turno = p_turno, estado = p_estado
+    WHERE codigo_empleado = p_codigo_empleado;
+END;
+
+CREATE PROCEDURE borrarEmpleado(
+    IN p_codigo_empleado CHAR(10)
+)
+BEGIN
+    DELETE FROM Empleado
+    WHERE codigo_empleado = p_codigo_empleado;
+END;
+
+CREATE PROCEDURE leerEmpleado()
+BEGIN
+    SELECT * FROM Empleado;
+END;
+
+CREATE PROCEDURE leerEmpleadoPorCodigo(
+    IN p_codigo_empleado CHAR(10)
+)
+BEGIN
+    SELECT * FROM Empleado
+    WHERE codigo_empleado = p_codigo_empleado;
+END;
+
+
+CREATE TRIGGER before_insert_empleado
+BEFORE INSERT ON Empleado
+FOR EACH ROW
+BEGIN
+    SET NEW.codigo_empleado = UPPER(NEW.codigo_empleado);
+END;
+
+CREATE TRIGGER before_update_empleado
+BEFORE UPDATE ON Empleado
+FOR EACH ROW
+BEGIN
+    SET NEW.codigo_empleado = UPPER(NEW.codigo_empleado);
+END;
+
+CREATE TRIGGER before_delete_empleado
+BEFORE DELETE ON Empleado
+FOR EACH ROW
+BEGIN
+END;
+
+CREATE PROCEDURE insertarCatalogo(
+    IN p_codigo_catalogo CHAR(3),
+    IN p_version INT,
+    IN p_tipo_de_productos VARCHAR(25),
+    IN p_fecha_ultima_modificacion DATE,
+    IN p_stock INT,
+    IN p_codigo_empleado CHAR(10)
+)
+BEGIN
+    INSERT INTO Catalogo (codigo_catalogo, version, tipo_de_productos, fecha_ultima_modificacion, stock, codigo_empleado)
+    VALUES (p_codigo_catalogo, p_version, p_tipo_de_productos, p_fecha_ultima_modificacion, p_stock, p_codigo_empleado);
+END;
+
+CREATE PROCEDURE modificarCatalogo(
+    IN p_codigo_catalogo CHAR(3),
+    IN p_version INT,
+    IN p_tipo_de_productos VARCHAR(25),
+    IN p_fecha_ultima_modificacion DATE,
+    IN p_stock INT,
+    IN p_codigo_empleado CHAR(10)
+)
+BEGIN
+    UPDATE Catalogo
+    SET version = p_version, tipo_de_productos = p_tipo_de_productos, fecha_ultima_modificacion = p_fecha_ultima_modificacion, stock = p_stock, codigo_empleado = p_codigo_empleado
+    WHERE codigo_catalogo = p_codigo_catalogo;
+END;
+
+CREATE PROCEDURE borrarCatalogo(
+    IN p_codigo_catalogo CHAR(3)
+)
+BEGIN
+    DELETE FROM Catalogo
+    WHERE codigo_catalogo = p_codigo_catalogo;
+END;
+
+CREATE PROCEDURE leerCatalogo()
+BEGIN
+    SELECT * FROM Catalogo;
+END;
+
+CREATE TRIGGER before_insert_catalogo
+BEFORE INSERT ON Catalogo
+FOR EACH ROW
+BEGIN
+    SET NEW.codigo_catalogo = UPPER(NEW.codigo_catalogo);
+END;
+
+CREATE TRIGGER before_update_catalogo
+BEFORE UPDATE ON Catalogo
+FOR EACH ROW
+BEGIN
+    SET NEW.codigo_catalogo = UPPER(NEW.codigo_catalogo);
+END;
+
+CREATE TRIGGER before_delete_catalogo
+BEFORE DELETE ON Catalogo
+FOR EACH ROW
+BEGIN
+END;
+
+CREATE PROCEDURE insertarProducto(
+    IN p_codigo_producto CHAR(5),
+    IN p_nombre VARCHAR(25),
+    IN p_marca VARCHAR(25),
+    IN p_descripcion VARCHAR(45),
+    IN p_precio DECIMAL(10,2),
+    IN p_tipo_de_producto VARCHAR(45),
+    IN p_codigo_catalogo CHAR(3)
+)
+BEGIN
+    INSERT INTO Producto (codigo_producto, nombre, marca, descripcion, precio, tipo_de_producto, codigo_catalogo)
+    VALUES (p_codigo_producto, p_nombre, p_marca, p_descripcion, p_precio, p_tipo_de_producto, p_codigo_catalogo);
+END;
+
+CREATE PROCEDURE modificarProducto(
+    IN p_codigo_producto CHAR(5),
+    IN p_nombre VARCHAR(25),
+    IN p_marca VARCHAR(25),
+    IN p_descripcion VARCHAR(45),
+    IN p_precio DECIMAL(10,2),
+    IN p_tipo_de_producto VARCHAR(45),
+    IN p_codigo_catalogo CHAR(3)
+)
+BEGIN
+    UPDATE Producto
+    SET nombre = p_nombre, marca = p_marca, descripcion = p_descripcion, precio = p_precio, tipo_de_producto = p_tipo_de_producto, codigo_catalogo = p_codigo_catalogo
+    WHERE codigo_producto = p_codigo_producto;
+END;
+
+CREATE PROCEDURE borrarProducto(
+    IN p_codigo_producto CHAR(5)
+)
+BEGIN
+    DELETE FROM Producto
+    WHERE codigo_producto = p_codigo_producto;
+END;
+
+CREATE PROCEDURE leerProducto()
+BEGIN
+    SELECT * FROM Producto;
+END;
+
+CREATE PROCEDURE leerProductoPorCodigo(
+    IN p_codigo_producto CHAR(5)
+)
+BEGIN
+    SELECT * FROM Producto
+    WHERE codigo_producto LIKE p_codigo_producto;
+END;
+
+
+CREATE TRIGGER before_insert_producto
+BEFORE INSERT ON Producto
+FOR EACH ROW
+BEGIN
+    SET NEW.codigo_producto = UPPER(NEW.codigo_producto);
+END;
+
+CREATE TRIGGER before_update_producto
+BEFORE UPDATE ON Producto
+FOR EACH ROW
+BEGIN
+    SET NEW.codigo_producto = UPPER(NEW.codigo_producto);
+END;
+
+CREATE TRIGGER before_delete_producto
+BEFORE DELETE ON Producto
+FOR EACH ROW
+BEGIN
+END;
+
+CREATE PROCEDURE insertarProveedor(
+    IN p_codigo_proveedor CHAR(10),
+    IN p_nombre_proveedor VARCHAR(45)
+)
+BEGIN
+    INSERT INTO Proveedor (codigo_proveedor, nombre_proveedor)
+    VALUES (p_codigo_proveedor, p_nombre_proveedor);
+END;
+
+CREATE PROCEDURE modificarProveedor(
+    IN p_codigo_proveedor CHAR(10),
+    IN p_nombre_proveedor VARCHAR(45)
+)
+BEGIN
+    UPDATE Proveedor
+    SET nombre_proveedor = p_nombre_proveedor
+    WHERE codigo_proveedor = p_codigo_proveedor;
+END;
+
+CREATE PROCEDURE borrarProveedor(
+    IN p_codigo_proveedor CHAR(10)
+)
+BEGIN
+    DELETE FROM Proveedor
+    WHERE codigo_proveedor = p_codigo_proveedor;
+END;
+
+CREATE PROCEDURE leerProveedor()
+BEGIN
+    SELECT * FROM Proveedor;
+END;
+
+CREATE PROCEDURE leerProveedorPorCodigo(
+    IN p_codigo_proveedor CHAR(10)
+)
+BEGIN
+    SELECT * FROM Proveedor
+    WHERE codigo_proveedor = p_codigo_proveedor;
+END;
+
+
+CREATE TRIGGER before_insert_proveedor
+BEFORE INSERT ON Proveedor
+FOR EACH ROW
+BEGIN
+    SET NEW.codigo_proveedor = UPPER(NEW.codigo_proveedor);
+END;
+
+CREATE TRIGGER before_update_proveedor
+BEFORE UPDATE ON Proveedor
+FOR EACH ROW
+BEGIN
+    SET NEW.codigo_proveedor = UPPER(NEW.codigo_proveedor);
+END;
+
+CREATE TRIGGER before_delete_proveedor
+BEFORE DELETE ON Proveedor
+FOR EACH ROW
+BEGIN
+END;
+
+
+CREATE PROCEDURE obtenerCantidadPedidosPorEmpleado()
+BEGIN
+    SELECT COUNT(P.codigo_empleado) AS Cantidad_Pedidos, 
+           E.nombre_empleado, 
+           E.estado, 
+           P.numero_pedido, 
+           ET.telefono
+    FROM Empleado AS E
+    INNER JOIN Pedido AS P ON E.codigo_empleado = P.codigo_empleado
+    INNER JOIN Empleado_Telefonos AS ET ON E.codigo_empleado = ET.codigo_empleado
+    WHERE E.estado LIKE 'A%'
+    GROUP BY E.nombre_empleado, E.estado, P.numero_pedido, ET.telefono
+    ORDER BY Cantidad_Pedidos DESC;
+END;
+
+CREATE PROCEDURE obtenerProductoConMayorStock()
+BEGIN
+    SELECT MAX(catalogo.stock) AS Mayor_Producto, 
+           producto.nombre, 
+           producto.tipo_de_producto, 
+           proveedor.nombre_proveedor
+    FROM producto
+    INNER JOIN distribuir_productos
+    ON producto.codigo_producto = distribuir_productos.codigo_producto
+    INNER JOIN proveedor
+    ON proveedor.codigo_proveedor = distribuir_productos.codigo_proveedor
+    INNER JOIN catalogo
+    ON catalogo.codigo_catalogo = producto.codigo_catalogo -- corregido
+    GROUP BY producto.nombre, producto.tipo_de_producto, proveedor.nombre_proveedor;
+END;
+
+CREATE PROCEDURE obtenerCostoPromedioPorTipoDeProducto(tipo_de_producto VARCHAR(255))
+BEGIN
+    SELECT TRUNCATE(AVG(producto.precio), 2) as Costo_Promedio, catalogo.tipo_de_productos
+    FROM producto
+    INNER JOIN catalogo
+    ON producto.codigo_catalago = catalogo.codigo_catalogo
+    WHERE catalogo.tipo_de_productos = tipo_de_producto;
+END;
+
+CREATE PROCEDURE obtenerProveedoresConCorreosYahoo()
+BEGIN
+    SELECT proveedor.nombre_proveedor, proveedor_correos.correo, producto.nombre as Nombre_Producto
+    FROM proveedor
+    INNER JOIN proveedor_correos
+    ON proveedor.codigo_proveedor = proveedor_correos.codigo_proveedor
+    INNER JOIN distribuir_productos
+    ON distribuir_productos.codigo_proveedor = proveedor_correos.codigo_proveedor
+    INNER JOIN producto
+    ON producto.codigo_producto = distribuir_productos.codigo_producto
+    WHERE proveedor_correos.correo LIKE '%yahoo%'
+    ORDER BY proveedor.nombre_proveedor;
+END;
+
+CREATE PROCEDURE obtenerCatalogosModificadosEntreFechas(inicio DATE, fin DATE)
+BEGIN
+    SELECT catalogo.version, catalogo.fecha_ultima_modificación, empleado.nombre_empleado,
+                  empleado.turno
+           FROM catalogo
+           INNER JOIN empleado
+           ON empleado.codigo_empleado = catalogo.codigo_empleado
+           WHERE catalogo.fecha_ultima_modificación BETWEEN inicio AND fin;
+END;
+
+CREATE PROCEDURE obtenerProveedoresConTelefonosYCorreos(codigo_proveedor_pattern VARCHAR(255))
+BEGIN
+    SELECT Proveedor.nombre_proveedor AS "Proveedor",Proveedor_Telefonos.telefono AS "Telefono",Proveedor_Correos.correo AS "Correo"
+    FROM Proveedor
+    INNER JOIN Proveedor_Telefonos ON Proveedor_Telefonos.codigo_proveedor = Proveedor.codigo_proveedor
+    INNER JOIN Proveedor_Correos ON Proveedor_Correos.codigo_proveedor = Proveedor.codigo_proveedor
+    WHERE Proveedor.codigo_proveedor LIKE codigo_proveedor_pattern;
+END;
+
+CREATE PROCEDURE obtenerProductosInvolucradosEnPedidosPorEmpleado()
+BEGIN
+    SELECT incluir_producto.numero_pedido, incluir_producto.cantidad,
+    empleado.nombre_empleado,
+    proveedor.codigo_proveedor
+    FROM incluir_producto
+    INNER JOIN pedido
+    ON pedido.numero_pedido = incluir_producto.numero_pedido
+    INNER JOIN proveedor
+    ON proveedor.codigo_proveedor = pedido.codigo_proveedor
+    INNER JOIN empleado
+    ON empleado.codigo_empleado = pedido.codigo_empleado
+    WHERE empleado.turno LIKE 'T%'
+    ORDER BY incluir_producto.cantidad DESC;
+END;
+
+CREATE PROCEDURE obtenerProductosSolarParaNinosPorPedido()
+BEGIN
+    SELECT P.numero_pedido, PR.codigo_producto, PR.nombre, PR.precio 
+    FROM Producto as PR
+    INNER JOIN Incluir_Producto as P
+    ON P.codigo_producto = PR.codigo_producto
+    WHERE PR.nombre LIKE "SOLAR%" AND PR.nombre LIKE "%NIÑO%"
+    ORDER BY numero_pedido ASC;
+END;
+
+CREATE PROCEDURE obtenerNumeroDePedidosPorEmpleado()
+BEGIN
+    SELECT empleado.codigo_empleado, Empleado.nombre_empleado, empleado.turno,
+    count(pedido.numero_pedido) as numero_pedidos
+    FROM Empleado
+    INNER JOIN pedido
+    ON empleado.codigo_empleado = pedido.codigo_empleado
+    GROUP BY empleado.codigo_empleado
+    ORDER BY numero_pedidos DESC
+    LIMIT 2;
+END;
+
+CREATE PROCEDURE obtenerInformacionDeCatalogos()
+BEGIN
+    SELECT DISTINCT C.codigo_catalogo, C.tipo_de_productos, 
+                       MAX(C.fecha_ultima_modificación) AS UltimaModificacion, 
+                       C.Stock, E.nombre_empleado
+            FROM Catalogo as C
+            INNER JOIN Empleado as E
+            ON E.codigo_empleado = C.codigo_empleado
+            GROUP BY C.tipo_de_productos;
+END;
+
+CREATE PROCEDURE obtenerMesesEnCatalogoPorProducto()
+BEGIN
+    SELECT producto.nombre, 
+                       TIMESTAMPDIFF(YEAR, distribuir_productos.fecha_de_ingreso, catalogo.fecha_ultima_modificacion) AS Meses_en_Catalogo,
+                       producto.tipo_de_producto, 
+                       distribuir_productos.codigo_producto
+            FROM catalogo
+            INNER JOIN producto
+            ON catalogo.codigo_catalogo = producto.codigo_catalago
+            INNER JOIN distribuir_productos
+            ON distribuir_productos.codigo_producto = producto.codigo_producto;
+END;
+
+CREATE PROCEDURE obtenerProductosDistribuidosDespuesDe20170101()
+BEGIN
+    SELECT IP.numero_pedido, IP.codigo_producto, P.nombre, DP.fecha_de_ingreso
+    FROM Incluir_Producto AS IP
+    INNER JOIN Producto AS P
+    ON IP.codigo_producto = P.codigo_producto
+    INNER JOIN Distribuir_Productos AS DP
+    ON IP.codigo_producto = DP.codigo_producto
+    WHERE DP.fecha_de_ingreso >'2017-01-01';
+END;
+
+CREATE PROCEDURE obtenerProductosParaNinosConPrecioMenorA150()
+BEGIN
+    SELECT Producto.tipo_de_producto AS "Tipo de producto",
+    Producto.descripción AS "Descripcion",
+    Producto.precio AS "Precio"
+    FROM Producto
+    WHERE Producto.tipo_de_producto= "MONTURA PARA NIÑOS"
+    AND Producto.nombre LIKE '%SOLAR%'
+    AND Producto.precio < 150;
+END;

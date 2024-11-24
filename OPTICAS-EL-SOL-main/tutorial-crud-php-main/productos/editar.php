@@ -21,28 +21,37 @@ if (!isset($_GET['codigo_producto'])) {
 
 if (isset($_POST['submit'])) {
     try {
+        // Configuración de la conexión
         $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
         $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
+        // Preparar los datos del producto
         $producto = [
             "codigo_producto" => $_GET['codigo_producto'],
             "nombre" => $_POST['nombre'],
             "marca" => $_POST['marca'],
             "descripcion" => $_POST['descripcion'],
             "precio" => $_POST['precio'],
-            "tipo_de_producto" => $_POST['tipo_de_producto']
+            "tipo_de_producto" => $_POST['tipo_de_producto'],
+            "codigo_catalogo" => $_POST['codigo_catalogo']  // Agregar este campo
         ];
 
-        $consultaSQL = "UPDATE Producto SET
-            nombre = :nombre,
-            marca = :marca,
-            descripcion = :descripcion,
-            precio = :precio,
-            tipo_de_producto = :tipo_de_producto
-            WHERE codigo_producto = :codigo_producto";
-
+        // Llamar al procedimiento almacenado para actualizar el producto
+        $consultaSQL = "CALL modificarProducto(:codigo_producto, :nombre, :marca, :descripcion, :precio, :tipo_de_producto, :codigo_catalogo)";
         $consulta = $conexion->prepare($consultaSQL);
-        $consulta->execute($producto);
+
+        // Pasar los parámetros al procedimiento
+        $consulta->bindParam(':codigo_producto', $producto['codigo_producto'], PDO::PARAM_STR);
+        $consulta->bindParam(':nombre', $producto['nombre'], PDO::PARAM_STR);
+        $consulta->bindParam(':marca', $producto['marca'], PDO::PARAM_STR);
+        $consulta->bindParam(':descripcion', $producto['descripcion'], PDO::PARAM_STR);
+        $consulta->bindParam(':precio', $producto['precio'], PDO::PARAM_STR);
+        $consulta->bindParam(':tipo_de_producto', $producto['tipo_de_producto'], PDO::PARAM_STR);
+        $consulta->bindParam(':codigo_catalogo', $producto['codigo_catalogo'], PDO::PARAM_STR);  // Enlazar código_catalogo
+
+        $consulta->execute();
+
+        $resultado['mensaje'] = 'El producto ' . escapar($_POST['nombre']) . ' ha sido actualizado correctamente';
 
     } catch (PDOException $error) {
         $resultado['error'] = true;
@@ -51,11 +60,13 @@ if (isset($_POST['submit'])) {
 }
 
 try {
+    // Conexión a la base de datos
     $dsn = 'mysql:host=' . $config['db']['host'] . ';dbname=' . $config['db']['name'];
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
+    // Obtener los datos del producto
     $codigo_producto = $_GET['codigo_producto'];
-    $consultaSQL = "SELECT * FROM Producto WHERE codigo_producto = :codigo_producto";
+    $consultaSQL = "CALL leerProductoPorCodigo(:codigo_producto)";
 
     $sentencia = $conexion->prepare($consultaSQL);
     $sentencia->bindParam(':codigo_producto', $codigo_producto, PDO::PARAM_STR);
@@ -72,6 +83,7 @@ try {
     $resultado['error'] = true;
     $resultado['mensaje'] = $error->getMessage();
 }
+
 ?>
 
 <?php require "../templates/header.php"; ?>
@@ -126,6 +138,10 @@ try {
                 <div class="form-group">
                     <label for="tipo_de_producto">Tipo de Producto</label>
                     <input type="text" name="tipo_de_producto" id="tipo_de_producto" value="<?= escapar($producto['tipo_de_producto']) ?>" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="codigo_catalogo">Código del Catálogo</label>
+                    <input type="text" name="codigo_catalogo" id="codigo_catalogo" value="<?= escapar($producto['codigo_catalogo']) ?>" class="form-control" required>
                 </div>
                 <div class="form-group">
                     <input name="csrf" type="hidden" value="<?php echo escapar($_SESSION['csrf']); ?>">

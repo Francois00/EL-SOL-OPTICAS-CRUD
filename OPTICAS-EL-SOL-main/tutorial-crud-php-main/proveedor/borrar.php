@@ -18,8 +18,8 @@ try {
     if (isset($_GET['codigo_proveedor'])) {
         $codigo_proveedor = $_GET['codigo_proveedor'];
 
-        // Consulta para eliminar el proveedor
-        $consultaSQL = "DELETE FROM Proveedor WHERE codigo_proveedor = :codigo_proveedor";
+        // Llamar al procedimiento almacenado para eliminar el proveedor
+        $consultaSQL = "CALL borrarProveedor(:codigo_proveedor)";
 
         // Preparar y ejecutar la consulta
         $sentencia = $conexion->prepare($consultaSQL);

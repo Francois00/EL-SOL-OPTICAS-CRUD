@@ -38,6 +38,7 @@
   <a href="/OPTICAS-EL-SOL-main/tutorial-crud-php-main/catalogo/index.php">Catálogos</a>
   <a href="/OPTICAS-EL-SOL-main/tutorial-crud-php-main/empleado/index.php">Empleados</a>
   <a href="/OPTICAS-EL-SOL-main/tutorial-crud-php-main/proveedor/index.php">Proveedores</a>
+  <a href="/OPTICAS-EL-SOL-main/tutorial-crud-php-main/reportes/index.php">Reportes</a>
 </div>
 
  

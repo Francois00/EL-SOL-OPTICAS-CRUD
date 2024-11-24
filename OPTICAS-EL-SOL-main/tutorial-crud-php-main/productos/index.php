@@ -14,12 +14,14 @@ try {
     $conexion = new PDO($dsn, $config['db']['user'], $config['db']['pass'], $config['db']['options']);
 
     if (isset($_POST['codigo_producto'])) {
-        $consultaSQL = "SELECT * FROM Producto WHERE codigo_producto LIKE :codigo_producto";
+       
+        $consultaSQL = "CALL leerProductoPorCodigo(:codigo_producto)";
         $sentencia = $conexion->prepare($consultaSQL);
         $codigo_producto = "%" . $_POST['codigo_producto'] . "%";
         $sentencia->bindParam(':codigo_producto', $codigo_producto, PDO::PARAM_STR);
     } else {
-        $consultaSQL = "SELECT * FROM Producto";
+        
+        $consultaSQL = "CALL leerProducto()";
         $sentencia = $conexion->prepare($consultaSQL);
     }
 
@@ -80,29 +82,27 @@ $titulo = isset($_POST['codigo_producto']) ? 'Lista de productos (' . $_POST['co
                     </tr>
                 </thead>
                 <tbody>
-    <?php if ($productos && $sentencia->rowCount() > 0) {
-        foreach ($productos as $fila) { ?>
-            <tr>
-                <td><?php echo escapar($fila["codigo_producto"]); ?></td>
-                <td><?php echo escapar($fila["nombre"]); ?></td>
-                <td><?php echo escapar($fila["marca"]); ?></td>
-                <td><?php echo escapar($fila["descripcion"]); ?></td>
-                <td><?php echo escapar($fila["precio"]); ?></td>
-                <td><?php echo escapar($fila["tipo_de_producto"]); ?></td>
-                <td>
-                    <a href="<?= 'borrar.php?codigo_producto=' . escapar($fila["codigo_producto"]) ?>">🗑️Borrar</a>
-                    <a href="<?= 'editar.php?codigo_producto=' . escapar($fila["codigo_producto"]) ?>">✏️Editar</a>
-                </td>
-            </tr>
-        <?php }
-    } else { ?>
-        <tr>
-            <td colspan="7">No se encontraron resultados</td>
-        </tr>
-    <?php } ?>
-<tbody>
-
-
+                    <?php if ($productos && $sentencia->rowCount() > 0) {
+                        foreach ($productos as $fila) { ?>
+                            <tr>
+                                <td><?php echo escapar($fila["codigo_producto"]); ?></td>
+                                <td><?php echo escapar($fila["nombre"]); ?></td>
+                                <td><?php echo escapar($fila["marca"]); ?></td>
+                                <td><?php echo escapar($fila["descripcion"]); ?></td>
+                                <td><?php echo escapar($fila["precio"]); ?></td>
+                                <td><?php echo escapar($fila["tipo_de_producto"]); ?></td>
+                                <td>
+                                    <a href="<?= 'borrar.php?codigo_producto=' . escapar($fila["codigo_producto"]) ?>">🗑️Borrar</a>
+                                    <a href="<?= 'editar.php?codigo_producto=' . escapar($fila["codigo_producto"]) ?>">✏️Editar</a>
+                                </td>
+                            </tr>
+                        <?php }
+                    } else { ?>
+                        <tr>
+                            <td colspan="7">No se encontraron resultados</td>
+                        </tr>
+                    <?php } ?>
+                <tbody>
             </table>
         </div>
     </div>
