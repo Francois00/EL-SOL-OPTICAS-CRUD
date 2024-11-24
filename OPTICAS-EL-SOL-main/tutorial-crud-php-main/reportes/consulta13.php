@@ -10,17 +10,11 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query13 = "SELECT Producto.tipo_de_producto AS 'Tipo de producto',
-                   Producto.descripcion AS 'Descripcion',
-                   Producto.precio AS 'Precio'
-            FROM Producto
-            WHERE Producto.tipo_de_producto = 'MONTURA PARA NIÑOS'
-            AND Producto.nombre LIKE '%SOLAR%'
-            AND Producto.precio < 150";
-
+$query13 = "CALL obtenerProductosParaNinosConPrecioMenorA150()";
 $sentencia13 = $conexion->prepare($query13);
 $sentencia13->execute();
 $resultado13 = $sentencia13->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include '../templates/header.php'; ?>

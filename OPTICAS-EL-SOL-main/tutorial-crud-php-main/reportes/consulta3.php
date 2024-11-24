@@ -9,23 +9,25 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$tipo_de_producto = 'MONTURA OFTALMOLOGICA'; // Ejemplo, puedes cambiarlo dinámicamente
+// Ejemplo de tipo de producto
+$tipo_de_producto = 'MONTURA OFTALMOLOGICA'; // Puedes cambiarlo dinámicamente
 $query3 = "CALL obtenerCostoPromedioPorTipoDeProducto(:tipo_de_producto)";
 $sentencia3 = $conexion->prepare($query3);
 $sentencia3->bindParam(':tipo_de_producto', $tipo_de_producto, PDO::PARAM_STR);
 $sentencia3->execute();
-$resultado3 = $sentencia3->fetchAll(PDO::FETCH_ASSOC);
+$resultado1 = $sentencia3->fetch(PDO::FETCH_ASSOC);
 
-
-$sentencia1 = $conexion->prepare($query1);
-$sentencia1->execute();
-$resultado1 = $sentencia1->fetch(PDO::FETCH_ASSOC);
-
-$sentencia2 = $conexion->prepare($query2);
-$sentencia2->execute();
-$resultado2 = $sentencia2->fetch(PDO::FETCH_ASSOC);
-
+$tipo_de_producto = 'MONTURA SOLAR';
+$query3 = "CALL obtenerCostoPromedioPorTipoDeProducto(:tipo_de_producto)";
 $sentencia3 = $conexion->prepare($query3);
+$sentencia3->bindParam(':tipo_de_producto', $tipo_de_producto, PDO::PARAM_STR);
+$sentencia3->execute();
+$resultado2 = $sentencia3->fetch(PDO::FETCH_ASSOC);
+
+$tipo_de_producto = 'MONTURA PARA NIÑOS';
+$query3 = "CALL obtenerCostoPromedioPorTipoDeProducto(:tipo_de_producto)";
+$sentencia3 = $conexion->prepare($query3);
+$sentencia3->bindParam(':tipo_de_producto', $tipo_de_producto, PDO::PARAM_STR);
 $sentencia3->execute();
 $resultado3 = $sentencia3->fetch(PDO::FETCH_ASSOC);
 ?>

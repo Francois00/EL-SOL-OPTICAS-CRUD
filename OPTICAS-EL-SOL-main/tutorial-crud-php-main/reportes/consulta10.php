@@ -10,22 +10,10 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query10 = "SELECT C.codigo_catalogo, 
-                   C.tipo_de_productos, 
-                   MAX(C.fecha_ultima_modificacion) AS UltimaModificacion, 
-                   C.Stock, 
-                   E.nombre_empleado
-            FROM Catalogo as C
-            INNER JOIN Empleado as E
-            ON E.codigo_empleado = C.codigo_empleado
-            GROUP BY C.codigo_catalogo, C.tipo_de_productos, C.Stock, E.nombre_empleado";
-
+$query10 = "CALL obtenerInformacionDeCatalogos()";
 $sentencia10 = $conexion->prepare($query10);
 $sentencia10->execute();
 $resultado10 = $sentencia10->fetchAll(PDO::FETCH_ASSOC);
-
-// Verificación de los resultados
-var_dump($resultado10); // Verifica si los datos se están recuperando correctamente
 ?>
 
 <?php include '../templates/header.php'; ?>

@@ -9,20 +9,11 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query4 = "SELECT proveedor.nombre_proveedor, proveedor_correos.correo, producto.nombre as Nombre_Producto
-           FROM proveedor
-           INNER JOIN proveedor_correos
-           ON proveedor.codigo_proveedor = proveedor_correos.codigo_proveedor
-           INNER JOIN distribuir_productos
-           ON distribuir_productos.codigo_proveedor = proveedor_correos.codigo_proveedor
-           INNER JOIN producto
-           ON producto.codigo_producto = distribuir_productos.codigo_producto
-           WHERE proveedor_correos.correo LIKE '%yahoo%'
-           ORDER BY proveedor.nombre_proveedor";
-
+$query4 = "CALL obtenerProveedoresConCorreosYahoo()";
 $sentencia4 = $conexion->prepare($query4);
 $sentencia4->execute();
 $resultado4 = $sentencia4->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include '../templates/header.php'; ?>

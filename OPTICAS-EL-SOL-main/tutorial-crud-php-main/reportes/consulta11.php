@@ -10,19 +10,11 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query11 = "SELECT producto.nombre, 
-                   TIMESTAMPDIFF(YEAR, distribuir_productos.fecha_de_ingreso, catalogo.fecha_ultima_modificacion) AS Meses_en_Catalogo,
-                   producto.tipo_de_producto, 
-                   distribuir_productos.codigo_producto
-            FROM catalogo
-            INNER JOIN producto
-            ON catalogo.codigo_catalogo = producto.codigo_catalogo  -- Corregido de codigo_catalago a codigo_catalogo
-            INNER JOIN distribuir_productos
-            ON distribuir_productos.codigo_producto = producto.codigo_producto";
-
+$query11 = "CALL obtenerMesesEnCatalogoPorProducto()";
 $sentencia11 = $conexion->prepare($query11);
 $sentencia11->execute();
 $resultado11 = $sentencia11->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include '../templates/header.php'; ?>

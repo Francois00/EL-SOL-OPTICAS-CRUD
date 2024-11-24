@@ -656,13 +656,14 @@ BEGIN
     GROUP BY producto.nombre, producto.tipo_de_producto, proveedor.nombre_proveedor;
 END;
 
-CREATE PROCEDURE obtenerCostoPromedioPorTipoDeProducto(tipo_de_producto VARCHAR(255))
+CREATE PROCEDURE obtenerCostoPromedioPorTipoDeProducto(IN tipo_de_producto VARCHAR(255))
 BEGIN
     SELECT TRUNCATE(AVG(producto.precio), 2) as Costo_Promedio, catalogo.tipo_de_productos
     FROM producto
     INNER JOIN catalogo
-    ON producto.codigo_catalago = catalogo.codigo_catalogo
-    WHERE catalogo.tipo_de_productos = tipo_de_producto;
+    ON producto.codigo_catalogo = catalogo.codigo_catalogo
+    WHERE catalogo.tipo_de_productos = tipo_de_producto
+    GROUP BY catalogo.tipo_de_productos;
 END;
 
 CREATE PROCEDURE obtenerProveedoresConCorreosYahoo()
@@ -679,15 +680,16 @@ BEGIN
     ORDER BY proveedor.nombre_proveedor;
 END;
 
-CREATE PROCEDURE obtenerCatalogosModificadosEntreFechas(inicio DATE, fin DATE)
+CREATE PROCEDURE obtenerCatalogosModificadosEntreFechas(IN inicio DATE, IN fin DATE)
 BEGIN
-    SELECT catalogo.version, catalogo.fecha_ultima_modificación, empleado.nombre_empleado,
+    SELECT catalogo.version, catalogo.fecha_ultima_modificacion, empleado.nombre_empleado,
                   empleado.turno
            FROM catalogo
            INNER JOIN empleado
            ON empleado.codigo_empleado = catalogo.codigo_empleado
-           WHERE catalogo.fecha_ultima_modificación BETWEEN inicio AND fin;
+           WHERE catalogo.fecha_ultima_modificacion BETWEEN inicio AND fin;
 END;
+
 
 CREATE PROCEDURE obtenerProveedoresConTelefonosYCorreos(codigo_proveedor_pattern VARCHAR(255))
 BEGIN
@@ -738,26 +740,28 @@ END;
 
 CREATE PROCEDURE obtenerInformacionDeCatalogos()
 BEGIN
-    SELECT DISTINCT C.codigo_catalogo, C.tipo_de_productos, 
-                       MAX(C.fecha_ultima_modificación) AS UltimaModificacion, 
-                       C.Stock, E.nombre_empleado
-            FROM Catalogo as C
-            INNER JOIN Empleado as E
-            ON E.codigo_empleado = C.codigo_empleado
-            GROUP BY C.tipo_de_productos;
+    SELECT C.codigo_catalogo, 
+           C.tipo_de_productos, 
+           MAX(C.fecha_ultima_modificacion) AS UltimaModificacion, 
+           C.Stock, 
+           E.nombre_empleado
+    FROM Catalogo AS C
+    INNER JOIN Empleado AS E ON E.codigo_empleado = C.codigo_empleado
+    GROUP BY C.codigo_catalogo, C.tipo_de_productos, C.Stock, E.nombre_empleado;
 END;
+
 
 CREATE PROCEDURE obtenerMesesEnCatalogoPorProducto()
 BEGIN
     SELECT producto.nombre, 
-                       TIMESTAMPDIFF(YEAR, distribuir_productos.fecha_de_ingreso, catalogo.fecha_ultima_modificacion) AS Meses_en_Catalogo,
-                       producto.tipo_de_producto, 
-                       distribuir_productos.codigo_producto
-            FROM catalogo
-            INNER JOIN producto
-            ON catalogo.codigo_catalogo = producto.codigo_catalago
-            INNER JOIN distribuir_productos
-            ON distribuir_productos.codigo_producto = producto.codigo_producto;
+           TIMESTAMPDIFF(YEAR, distribuir_productos.fecha_de_ingreso, catalogo.fecha_ultima_modificacion) AS Meses_en_Catalogo,
+           producto.tipo_de_producto, 
+           distribuir_productos.codigo_producto
+    FROM catalogo
+    INNER JOIN producto
+    ON catalogo.codigo_catalogo = producto.codigo_catalogo  
+    INNER JOIN distribuir_productos
+    ON distribuir_productos.codigo_producto = producto.codigo_producto;
 END;
 
 CREATE PROCEDURE obtenerProductosDistribuidosDespuesDe20170101()
@@ -774,10 +778,10 @@ END;
 CREATE PROCEDURE obtenerProductosParaNinosConPrecioMenorA150()
 BEGIN
     SELECT Producto.tipo_de_producto AS "Tipo de producto",
-    Producto.descripción AS "Descripcion",
+    Producto.descripcion AS "Descripcion", 
     Producto.precio AS "Precio"
     FROM Producto
-    WHERE Producto.tipo_de_producto= "MONTURA PARA NIÑOS"
+    WHERE Producto.tipo_de_producto = "MONTURA PARA NIÑOS"
     AND Producto.nombre LIKE '%SOLAR%'
     AND Producto.precio < 150;
 END;

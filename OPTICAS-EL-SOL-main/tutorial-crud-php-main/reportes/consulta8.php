@@ -10,16 +10,11 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query8 = "SELECT P.numero_pedido, PR.codigo_producto, PR.nombre, PR.precio
-           FROM Producto as PR
-           INNER JOIN Incluir_Producto as P
-           ON P.codigo_producto = PR.codigo_producto
-           WHERE PR.nombre LIKE 'SOLAR%' AND PR.nombre LIKE '%NIÑO%'
-           ORDER BY P.numero_pedido ASC";
-
+$query8 = "CALL obtenerProductosSolarParaNinosPorPedido()";
 $sentencia8 = $conexion->prepare($query8);
 $sentencia8->execute();
 $resultado8 = $sentencia8->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include '../templates/header.php'; ?>

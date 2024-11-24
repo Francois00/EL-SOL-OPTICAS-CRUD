@@ -10,16 +10,15 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query5 = "SELECT catalogo.version, catalogo.fecha_ultima_modificacion, empleado.nombre_empleado,
-                  empleado.turno
-           FROM catalogo
-           INNER JOIN empleado
-           ON empleado.codigo_empleado = catalogo.codigo_empleado
-           WHERE catalogo.fecha_ultima_modificacion BETWEEN '2022-09-22' AND '2022-10-29'";
-
+$inicio = '2022-09-22';
+$fin = '2022-10-29';
+$query5 = "CALL obtenerCatalogosModificadosEntreFechas(:inicio, :fin)";
 $sentencia5 = $conexion->prepare($query5);
+$sentencia5->bindParam(':inicio', $inicio, PDO::PARAM_STR);
+$sentencia5->bindParam(':fin', $fin, PDO::PARAM_STR);
 $sentencia5->execute();
 $resultado5 = $sentencia5->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include '../templates/header.php'; ?>
@@ -40,7 +39,7 @@ $resultado5 = $sentencia5->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($resultado5 as $fila) { ?>
                     <tr>
                         <td><?= escapar($fila['version']) ?></td>
-                        <td><?= escapar($fila['fecha_ultima_modificacion']) ?></td> <!-- Asegúrate de que el nombre de la columna sea correcto -->
+                        <td><?= escapar($fila['fecha_ultima_modificacion']) ?></td> <!-- Aquí usamos el nombre correcto -->
                         <td><?= escapar($fila['nombre_empleado']) ?></td>
                         <td><?= escapar($fila['turno']) ?></td>
                     </tr>

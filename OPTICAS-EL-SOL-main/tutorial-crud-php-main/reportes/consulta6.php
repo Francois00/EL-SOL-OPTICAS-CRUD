@@ -10,19 +10,13 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query6 = "SELECT proveedor.nombre_proveedor AS 'Proveedor', 
-                  Proveedor_Telefonos.telefono AS 'Telefono', 
-                  Proveedor_Correos.correo AS 'Correo'
-           FROM Proveedor
-           INNER JOIN Proveedor_Telefonos 
-           ON Proveedor_Telefonos.codigo_proveedor = Proveedor.codigo_proveedor
-           INNER JOIN Proveedor_Correos 
-           ON Proveedor_Correos.codigo_proveedor = Proveedor.codigo_proveedor
-           WHERE Proveedor.codigo_proveedor LIKE '11%'";
-
+$codigo_proveedor_pattern = "11%"; // Ejemplo, puede ser cualquier patrón de código
+$query6 = "CALL obtenerProveedoresConTelefonosYCorreos(:codigo_proveedor_pattern)";
 $sentencia6 = $conexion->prepare($query6);
+$sentencia6->bindParam(':codigo_proveedor_pattern', $codigo_proveedor_pattern, PDO::PARAM_STR);
 $sentencia6->execute();
 $resultado6 = $sentencia6->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include '../templates/header.php'; ?>

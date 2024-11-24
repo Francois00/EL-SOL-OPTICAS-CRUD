@@ -10,17 +10,11 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query12 = "SELECT IP.numero_pedido, IP.codigo_producto, P.nombre, DP.fecha_de_ingreso
-            FROM Incluir_Producto AS IP
-            INNER JOIN Producto AS P
-            ON IP.codigo_producto = P.codigo_producto
-            INNER JOIN Distribuir_Productos AS DP
-            ON IP.codigo_producto = DP.codigo_producto
-            WHERE DP.fecha_de_ingreso > '2017-01-01'";
-
+$query12 = "CALL obtenerProductosDistribuidosDespuesDe20170101()";
 $sentencia12 = $conexion->prepare($query12);
 $sentencia12->execute();
 $resultado12 = $sentencia12->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include '../templates/header.php'; ?>

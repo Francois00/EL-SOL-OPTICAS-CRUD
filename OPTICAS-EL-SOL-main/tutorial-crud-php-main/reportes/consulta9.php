@@ -10,18 +10,11 @@ try {
     die('Error de conexión: ' . $e->getMessage());
 }
 
-$query9 = "SELECT empleado.codigo_empleado, empleado.nombre_empleado, empleado.turno, 
-                  COUNT(pedido.numero_pedido) as numero_pedidos
-           FROM Empleado
-           INNER JOIN pedido
-           ON empleado.codigo_empleado = pedido.codigo_empleado
-           GROUP BY empleado.codigo_empleado
-           ORDER BY numero_pedidos DESC
-           LIMIT 2";
-
+$query9 = "CALL obtenerNumeroDePedidosPorEmpleado()";
 $sentencia9 = $conexion->prepare($query9);
 $sentencia9->execute();
 $resultado9 = $sentencia9->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <?php include '../templates/header.php'; ?>
